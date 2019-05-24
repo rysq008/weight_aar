@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black"
-    tools:context="com.innovationai.pigweigh.activitys.WeightPicCollectActivity">
+    tools:context="com.innovationai.pigweight.activitys.WeightPicCollectActivity">
 
     <FrameLayout
         android:id="@+id/fl_preview"
@@ -40,7 +40,7 @@
         android:scaleType="fitStart"
         android:visibility="gone" />
 
-    <com.innovationai.pigweigh.camera.SpiritView
+    <com.innovationai.pigweight.camera.SpiritView
         android:id="@+id/spiritwiew"
         android:layout_width="120dp"
         android:layout_height="120dp"

@@ -46,3 +46,35 @@ dependencies {
     compile 'com.amap.api:location:latest.integration'
 
 }
+
+//////// 打包发布 ////////
+apply plugin: 'maven'
+
+ext {
+    // 从Github上clone下来的项目的本地地址
+    GITHUB_REPO_PATH = "D:\\Android_work\\xiangchuang\\PigInsuranceWeightAAR"//"C:\\insurance\\farm_pig_insurance\\farm_pig_insurance"/*"C:\\pig_farmer_aar"*/
+    PUBLISH_GROUP_ID = 'com.innovationai.pigweight'
+    PUBLISH_ARTIFACT_ID = 'pig_insurance_weight'
+    PUBLISH_VERSION = android.defaultConfig.versionName/*'1.5.3'*/
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        def deployPath = file(project.GITHUB_REPO_PATH)
+        repository(url: "file://${deployPath.absolutePath}")
+        pom.project {
+            groupId project.PUBLISH_GROUP_ID
+            artifactId project.PUBLISH_ARTIFACT_ID
+            version project.PUBLISH_VERSION
+        }
+    }
+}
+
+// 源代码一起打包
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.sourceFiles
+}
+artifacts {
+    archives androidSourcesJar
+}

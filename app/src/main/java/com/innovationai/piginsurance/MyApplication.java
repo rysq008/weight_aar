@@ -2,7 +2,7 @@ package com.innovationai.piginsurance;
 
 import android.app.Application;
 
-import com.innovationai.pigweigh.AppConfig;
+import com.innovationai.pigweight.AppConfig;
 
 
 /**

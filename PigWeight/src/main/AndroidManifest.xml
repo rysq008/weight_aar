@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.innovationai.pigweigh">
+    package="com.innovationai.pigweight">
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -40,16 +40,16 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true">
         <activity
-            android:name=".activitys.SplashActivity"
+            android:name="com.innovationai.pigweight.activitys.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme" />
 
         <activity
-            android:name=".activitys.WeightPicCollectActivity"
+            android:name="com.innovationai.pigweight.activitys.WeightPicCollectActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme" />
 
-        <provider
+<!--        <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.animalcounter.provider"
             android:exported="false"
@@ -59,7 +59,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"
                 tools:replace="android:resource"/>
-        </provider>
+        </provider>-->
         <!--高德定位配置-->
         <meta-data
             android:name="com.amap.api.v2.apikey"

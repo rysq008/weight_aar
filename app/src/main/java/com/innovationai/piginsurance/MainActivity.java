@@ -1,12 +1,7 @@
 package com.innovationai.piginsurance;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,12 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.innovationai.pigweigh.Constant;
-import com.innovationai.pigweigh.event.EventManager;
-import com.innovationai.pigweigh.event.OnEventListener;
+import com.innovationai.pigweight.Constant;
+import com.innovationai.pigweight.event.EventManager;
+import com.innovationai.pigweight.event.OnEventListener;
 import com.xiangchuangtec.luolu.animalcounter.R;
-import com.innovationai.pigweigh.activitys.SplashActivity;
-import com.innovationai.pigweigh.activitys.WeightPicCollectActivity;
+import com.innovationai.pigweight.activitys.SplashActivity;
 
 import java.util.Map;
 
