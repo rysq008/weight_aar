@@ -363,7 +363,6 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
                             map.put("bitmap", bitmapByte);
                             EventManager.getInstance().postEventEvent(map);
                             KLog.d("scale compress width : " + bitmap.getWidth() + " height : " + bitmap.getHeight());
-
                             Toast.makeText(WeightPicCollectActivity.this, bean.getMsg(), Toast.LENGTH_SHORT).show();
 
                             finish();
