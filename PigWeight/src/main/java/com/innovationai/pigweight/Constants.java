@@ -1,6 +1,6 @@
 package com.innovationai.pigweight;
 
-public class Constant {
+public class Constants{
 
     public static final String LONGITUDE = "longitude";
     public static final String LATITUDE = "latitude";
@@ -13,6 +13,7 @@ public class Constant {
     public static final String ACTION_IMGWIDTH = "imgWidth";
     public static final String ACTION_IMGHEIGHT = "imgHeight";
     public static final String ACTION_BUNDLE = "bundle";
+    public static final String ACTION_IMG_RATIO = "imgRatio";
     // 连接超时
     public static final int timeOut = 30 * 1000;
     // 建立连接

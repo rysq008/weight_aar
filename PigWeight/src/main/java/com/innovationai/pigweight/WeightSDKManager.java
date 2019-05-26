@@ -9,8 +9,8 @@ import com.amap.api.location.AMapLocationListener;
 import com.innovationai.pigweight.utils.SPUtils;
 import com.socks.library.KLog;
 
-public class AppConfig {
-    private static final String TAG = "AppConfig";
+public class WeightSDKManager{
+    private static final String TAG = "WeightSDKManager";
     private static Application app;
 
     //声明AMapLocationClientOption对象
@@ -19,15 +19,15 @@ public class AppConfig {
     public AMapLocationClient mLocationClient = null;
     private String mAddress = "";
 
-    public static AppConfig newInstance() {
+    public static WeightSDKManager newInstance() {
         return Holder.appConfig;
     }
 
     private static class Holder {
-        static AppConfig appConfig = new AppConfig();
+        static WeightSDKManager appConfig = new WeightSDKManager();
     }
 
-    public void onCreate(Application application) {
+    public void init(Application application) {
         app = application;
         getCurrentLocationLatLng();
         if (BuildConfig.DEBUG) {
@@ -41,7 +41,7 @@ public class AppConfig {
         return app;
     }
 
-    public void onTerminate() {
+    public void onDestory() {
         if (mLocationClient != null) {
             mLocationClient.stopLocation();
         }
@@ -73,15 +73,15 @@ public class AppConfig {
                     amapLocation.getLocationType();//获取当前定位结果来源，如网络定位结果，详见定位类型表
                     double currentLat = amapLocation.getLatitude();//获取纬度
                     double currentLon = amapLocation.getLongitude();//获取经度
-                    SPUtils.putValue(getAppContext(), Constant.LATITUDE, String.valueOf(currentLat));
-                    SPUtils.putValue(getAppContext(), Constant.LONGITUDE, String.valueOf(currentLon));
-                    SPUtils.putValue(getAppContext(), Constant.ADDRESS_DETAIL, amapLocation.getAddress());
+                    SPUtils.putValue(getAppContext(), Constants.LATITUDE, String.valueOf(currentLat));
+                    SPUtils.putValue(getAppContext(), Constants.LONGITUDE, String.valueOf(currentLon));
+                    SPUtils.putValue(getAppContext(), Constants.ADDRESS_DETAIL, amapLocation.getAddress());
                     mAddress = amapLocation.getAddress();
                     amapLocation.getAccuracy();//获取精度信息
-                    KLog.d("AppConfig", currentLat + "    " + currentLon + "   " + mAddress);
-                    KLog.d("AppConfig", amapLocation.toString());
+                    KLog.d("WeightSDKManager", currentLat + "    " + currentLon + "   " + mAddress);
+                    KLog.d("WeightSDKManager", amapLocation.toString());
                 } else {
-                    KLog.json("AppConfig", "location Error, ErrCode:"
+                    KLog.json("WeightSDKManager", "location Error, ErrCode:"
                             + amapLocation.getErrorCode() + ", errInfo:"
                             + amapLocation.getErrorInfo());
                     //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。

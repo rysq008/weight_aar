@@ -2,8 +2,6 @@ package com.innovationai.piginsurance;
 
 import android.app.Application;
 
-import com.innovationai.pigweight.AppConfig;
-
 
 /**
  * @Author: Lucas.Cui
@@ -15,14 +13,10 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        //初始化
-        AppConfig.newInstance().onCreate(this);
     }
 
     @Override
     public void onTerminate() {
         super.onTerminate();
-        //注销
-        AppConfig.newInstance().onTerminate();
     }
 }

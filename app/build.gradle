@@ -22,7 +22,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
@@ -43,6 +43,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 //    implementation project(path: ':PigWeight')
-    compile  'com.innovationai.pigweight:pig_insurance_weight:1.0.3'
+    compile  'com.innovationai.pigweight:pig_insurance_weight:1.0.4'
 
 }

@@ -7,11 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.hardware.Camera;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
+import android.hardware.*;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
@@ -27,11 +23,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.innovationai.pigweight.Constant;
+import com.innovationai.pigweight.Constants;
 import com.innovationai.pigweight.R;
+import com.innovationai.pigweight.WeightSDKManager;
 import com.innovationai.pigweight.camera.CameraSurfaceView;
 import com.innovationai.pigweight.camera.CameraUtils;
 import com.innovationai.pigweight.camera.ImageUtils;
@@ -68,6 +64,10 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
     public static final String ACTION_RECOGNITION = "innovationai.intent.action.Recognition";
     private static final String[] NEEDED_PERMISSIONS = new String[]{Manifest.permission.CAMERA};
     private static final int ACTION_REQUEST_PERMISSIONS = 1;
+    /**
+     * 默认预览，输出图片高宽比，小于默认宽高比按屏幕宽高比处理
+     */
+    private static final float DEFAULT_RATIO = 16/9.0f;
 
     ImageView iv_preview;
     ImageView btn_upload;
@@ -88,12 +88,13 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
     private boolean mSafeToTakePicture = true, mGrantedCameraRequested, isCanTakePic;
     private static long internalTime;
     private Bitmap mBitmap;
-    private float mImgHeight, mImgWidth;
+    private float mImgHeight, mImgWidth, mScaleRatio;
 
-    public static void start(Activity context) {
+    static void start(Activity context, Bundle bundle) {
         //延时2s，防止重复启动页面
         if (System.currentTimeMillis() - internalTime > 2000) {
             Intent intent = new Intent(context, WeightPicCollectActivity.class);
+            intent.putExtra(Constants.ACTION_BUNDLE, bundle);
             context.startActivity(intent);
         }
         internalTime = System.currentTimeMillis();
@@ -111,10 +112,20 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
         spiritwiew.setOnClickListener(this);
         btn_finish.setOnClickListener(this);
         btn_upload.setOnClickListener(this);
+        Bundle bundle = getIntent().getBundleExtra(Constants.ACTION_BUNDLE);
+        mImgHeight = bundle.getFloat(Constants.ACTION_IMGHEIGHT);
+        mImgWidth = bundle.getFloat(Constants.ACTION_IMGWIDTH);
+        mScaleRatio = bundle.getFloat(Constants.ACTION_IMG_RATIO);
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
         mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        CameraUtils.setPreviewHeight(UIUtils.getWidthPixels(this) / 9 * 16);
+
+        if((float)UIUtils.getHeightPixels(this)/UIUtils.getWidthPixels(this ) >= DEFAULT_RATIO){
+            CameraUtils.setPreviewHeight((int)(UIUtils.getWidthPixels(this) * DEFAULT_RATIO));
+        }else {
+            CameraUtils.setPreviewHeight(UIUtils.getHeightPixels(this));
+        }
+
         CameraUtils.setPreviewWidth(UIUtils.getWidthPixels(this));
         fl_preview.getViewTreeObserver().addOnGlobalLayoutListener(this);
     }
@@ -185,7 +196,11 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
         fl_preview.addView(mPreviewSurfaceview);
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mPreviewSurfaceview.getLayoutParams();
         params.width = UIUtils.getWidthPixels(this);
-        params.height = UIUtils.getWidthPixels(this) * 16 / 9;
+        if((float)UIUtils.getHeightPixels(this)/UIUtils.getWidthPixels(this ) >= DEFAULT_RATIO){
+            params.height = (int)(UIUtils.getWidthPixels(this) * DEFAULT_RATIO);
+        }else {
+            params.height = (UIUtils.getHeightPixels(this));
+        }
         mPreviewSurfaceview.setLayoutParams(params);
         mPreviewSurfaceview.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -272,6 +287,7 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
                 iv_preview.setVisibility(View.GONE);
                 btn_finish.setText("退出");
             } else {
+                WeightSDKManager.newInstance().onDestory();
                 finish();
             }
         }
@@ -280,6 +296,7 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            WeightSDKManager.newInstance().onDestory();
             finish();
         }
         return super.onKeyDown(keyCode, event);
@@ -345,8 +362,8 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
                     Type type = new TypeToken<BaseBean<RecognitionBean>>() {
                     }.getType();
                     bean = gson.fromJson(result, type);
-                    if (bean.getStatus() == Constant.RESULT_OK && bean.getData() != null) {
-                        if (bean.getData().getStatus() == Constant.RESULT_OK) {
+                    if (bean.getStatus() == Constants.RESULT_OK && bean.getData() != null) {
+                        if (bean.getData().getStatus() == Constants.RESULT_OK) {
 //                            Intent intent = new Intent(ACTION_RECOGNITION);
 //                            intent.putExtra("data", (Serializable) bean.getData().getRecognitionResult());
 //                            ByteArrayOutputStream baos=new ByteArrayOutputStream();
@@ -354,7 +371,16 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
 //                            byte [] bitmapByte =baos.toByteArray();
 //                            intent.putExtra("bitmap", bitmapByte);
 //                            LocalBroadcastManager.getInstance(WeightPicCollectActivity.this).sendBroadcast(intent);
-                            Bitmap bitmap = ImageUtils.ratioScaleBitmap(mBitmap);
+                            //首先使用指定宽高返回图片，高宽值无效使用宽高比处理返回图片，高宽比无效使用默认 16：9高宽比返回图片
+                            Bitmap bitmap;
+                            if(mImgHeight > 0 && mImgWidth > 0){
+                                bitmap = ImageUtils.createBitmapBySize(mBitmap, mImgHeight, mImgWidth);
+                            }else if(mScaleRatio > 0){
+                                bitmap = ImageUtils.ratioScaleBitmapAddSide(mBitmap, mScaleRatio);
+                            }else {
+                                bitmap = ImageUtils.ratioScaleBitmapAddSide(mBitmap, 16/9.0f);
+                            }
+
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
                             byte[] bitmapByte = baos.toByteArray();
@@ -399,6 +425,7 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
             spiritwiew.postInvalidate();
             return;
         }
+        checkPosition(event);
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 // x,y,z分别存储坐标轴x,y,z上的加速度
             float x = event.values[0];
@@ -470,7 +497,6 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
             }
 //            tv_position.setText("x: " + (int) anglex + "  y: " + (int) angley + "   z: " + (int) anglez);
         }
-        checkPosition(event);
     }
 
     @Override

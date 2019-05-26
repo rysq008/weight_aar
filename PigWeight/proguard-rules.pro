@@ -44,8 +44,8 @@
 -keep class com.innovationai.pigweight.net.bean.**{*;}
 -keep class com.innovationai.pigweight.utils.**{*;}
 
--keep class com.innovationai.pigweight.AppConfig {*;}
--keep class com.innovationai.pigweight.Constant {*;}
+-keep class com.innovationai.pigweight.WeightSDKManager {*;}
+-keep class com.innovationai.pigweight.Constants {*;}
 -keep class com.innovationai.pigweight.activitys.SplashActivity {
     public static <fields>;
     public static <methods>;

@@ -2,9 +2,8 @@ package com.innovationai.pigweight.net.netutils;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.util.Log;
 
-import com.innovationai.pigweight.Constant;
+import com.innovationai.pigweight.Constants;
 import com.innovationai.pigweight.net.utils.CompressUtils;
 import com.socks.library.KLog;
 
@@ -185,7 +184,7 @@ public class OnSuccessAndFaultSub extends DisposableObserver<ResponseBody>
             KLog.json("okhttp body", result);
             JSONObject jsonObject = new JSONObject(result);
             int resultCode = jsonObject.getInt("status");
-            if (resultCode == Constant.RESULT_OK) {
+            if (resultCode == Constants.RESULT_OK) {
                 mOnSuccessAndFaultListener.onSuccess(result);
             } else {
                 String errorMsg = jsonObject.getString("msg");

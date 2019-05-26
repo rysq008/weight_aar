@@ -1,31 +1,26 @@
 package com.innovationai.pigweight.net.netutils;
 
 import com.innovationai.pigweight.BuildConfig;
-import com.innovationai.pigweight.AppConfig;
-import com.innovationai.pigweight.Constant;
+import com.innovationai.pigweight.Constants;
+import com.innovationai.pigweight.WeightSDKManager;
 import com.innovationai.pigweight.net.netapi.HttpApi;
 import com.innovationai.pigweight.net.netapi.URLConstant;
 import com.innovationai.pigweight.utils.PathUtils;
 import com.innovationai.pigweight.utils.SPUtils;
 import com.socks.library.KLog;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Cache;
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: Lucas.Cui
@@ -99,8 +94,8 @@ public class HttpMethods {
                         .addHeader("Content-Type", "application/x-www-form-urlencoded")
                         .addHeader("Charset", "UTF-8")
                         .addHeader("AppKeyAuthorization", "hopen")
-                        .addHeader(Constant.LATITUDE, (String) SPUtils.getValue(AppConfig.getAppContext(), Constant.LATITUDE, ""))
-                        .addHeader(Constant.LONGITUDE, (String) SPUtils.getValue(AppConfig.getAppContext(), Constant.LONGITUDE, ""))
+                        .addHeader(Constants.LATITUDE, (String) SPUtils.getValue(WeightSDKManager.getAppContext(), Constants.LATITUDE, ""))
+                        .addHeader(Constants.LONGITUDE, (String) SPUtils.getValue(WeightSDKManager.getAppContext(), Constants.LONGITUDE, ""))
                         .method(originalRequest.method(), originalRequest.body());
 //                requestBuilder.addHeader("Authorization", "Bearer " + BaseConstant.TOKEN);//添加请求头信息，服务器进行token有效性验证
                 Request request = requestBuilder.build();

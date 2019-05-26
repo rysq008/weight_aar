@@ -1,28 +1,27 @@
 package com.innovationai.piginsurance;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.innovationai.pigweight.Constant;
+import com.innovationai.pigweight.Constants;
+import com.innovationai.pigweight.activitys.SplashActivity;
 import com.innovationai.pigweight.event.EventManager;
 import com.innovationai.pigweight.event.OnEventListener;
 import com.xiangchuangtec.luolu.animalcounter.R;
-import com.innovationai.pigweight.activitys.SplashActivity;
 
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private TextView tv_action_weight, tv_content;
     private ImageView iv_bitmap;
-    private EditText et_appid, et_token;
+    private EditText et_appid, et_token, et_height, et_width, et_ratio;
     private OnEventListener mOnEventListener;
     private String mAppIdTest = "oL-mw59d4mEgDxG49-nQVM2hIha4";
     private String token = "token";
@@ -34,15 +33,29 @@ public class MainActivity extends AppCompatActivity {
         tv_action_weight = findViewById(R.id.tv_action_weight);
         et_appid = findViewById(R.id.et_appid);
         et_token = findViewById(R.id.et_token);
+        et_height = findViewById(R.id.et_height);
+        et_width = findViewById(R.id.et_width);
+        et_ratio = findViewById(R.id.et_ratio);
         tv_content = findViewById(R.id.tv_content);
         iv_bitmap = findViewById(R.id.iv_bitmap);
         tv_action_weight = findViewById(R.id.tv_action_weight);
-        tv_action_weight.setOnClickListener(new View.OnClickListener() {
+        tv_action_weight.setOnClickListener(new View.OnClickListener(){
+
             @Override
-            public void onClick(View v) {
+            public void onClick(View v){
+
                 Bundle bundle = new Bundle();
-                bundle.putString(Constant.ACTION_APPID, et_appid.getText().toString().trim());
-                bundle.putString(Constant.ACTION_TOKEN, et_token.getText().toString().trim());
+                bundle.putString(Constants.ACTION_APPID, et_appid.getText().toString().trim());
+                bundle.putString(Constants.ACTION_TOKEN, et_token.getText().toString().trim());
+                if(!TextUtils.isEmpty(et_width.getText().toString().trim())){
+                    bundle.putFloat(Constants.ACTION_IMGWIDTH, Float.valueOf(et_width.getText().toString().trim()));
+                }
+               if(!TextUtils.isEmpty(et_height.getText().toString().trim())){
+                   bundle.putFloat(Constants.ACTION_IMGHEIGHT, Float.valueOf(et_height.getText().toString().trim()));
+               }
+               if(!TextUtils.isEmpty(et_ratio.getText().toString().trim())){
+                   bundle.putFloat(Constants.ACTION_IMG_RATIO, Float.valueOf(et_ratio.getText().toString().trim()));
+               }
                 SplashActivity.start(MainActivity.this, bundle);
             }
         });
@@ -59,7 +72,10 @@ public class MainActivity extends AppCompatActivity {
     public class OnWeightListener implements OnEventListener {
         @Override
         public void onReceive(Map<String, Object> map) {
-            if (map == null) return;
+            if (map == null) {
+                Toast.makeText(MainActivity.this,"没有返回结果", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Toast.makeText(MainActivity.this, "模型结果反馈： " + map.get("data").toString(), Toast.LENGTH_LONG).show();
             tv_content.setText(map.get("data").toString());
             byte[] bis = (byte[]) map.get("bitmap");

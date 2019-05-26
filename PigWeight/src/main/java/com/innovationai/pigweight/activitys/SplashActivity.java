@@ -7,14 +7,16 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.widget.Toast;
 
 import com.apeng.permissions.EsayPermissions;
 import com.apeng.permissions.OnPermission;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.innovationai.pigweight.Constant;
+import com.innovationai.pigweight.Constants;
 import com.innovationai.pigweight.R;
+import com.innovationai.pigweight.WeightSDKManager;
 import com.innovationai.pigweight.net.bean.BaseBean;
 import com.innovationai.pigweight.net.netsubscribe.HttpRequestSubscribe;
 import com.innovationai.pigweight.net.netutils.NetError;
@@ -44,7 +46,7 @@ public class SplashActivity extends AppCompatActivity {
     public static void start(Activity context, Bundle bundle) {
 
         Intent intent = new Intent(context, SplashActivity.class);
-        intent.putExtra(Constant.ACTION_BUNDLE, bundle);
+        intent.putExtra(Constants.ACTION_BUNDLE, bundle);
         context.startActivity(intent);
     }
 
@@ -53,16 +55,15 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         // TODO: 2019/5/24 现在只在这里使用appId
-        Bundle bundle = getIntent().getBundleExtra(Constant.ACTION_BUNDLE);
+        Bundle bundle = getIntent().getBundleExtra(Constants.ACTION_BUNDLE);
         if (!verifyParams(bundle)) {
-            Toast.makeText(SplashActivity.this, "参数不能为空", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
-
-        String appId = bundle.getString(Constant.ACTION_APPID);
-        String token = bundle.getString(Constant.ACTION_TOKEN);
-        if (appId.equals(SPUtils.getValue(SplashActivity.this, Constant.ACTION_APPID, ""))) {
+        WeightSDKManager.newInstance().init(getApplication());
+        String appId = bundle.getString(Constants.ACTION_APPID);
+        String token = bundle.getString(Constants.ACTION_TOKEN);
+        if (appId.equals(SPUtils.getValue(SplashActivity.this, Constants.ACTION_APPID, ""))) {
             if (EsayPermissions.isHasPermission(getApplicationContext(), PERMISSION)) {
                 toWeightPage();
             } else {
@@ -75,8 +76,26 @@ public class SplashActivity extends AppCompatActivity {
 
     private boolean verifyParams(Bundle bundle) {
         if (bundle == null) return false;
-        if (TextUtils.isEmpty(bundle.getString(Constant.ACTION_APPID))) return false;
-        if (TextUtils.isEmpty(bundle.getString(Constant.ACTION_TOKEN))) return false;
+        if (TextUtils.isEmpty(bundle.getString(Constants.ACTION_APPID))) {
+            Toast.makeText(SplashActivity.this, "参数 appId 不能为空", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (TextUtils.isEmpty(bundle.getString(Constants.ACTION_TOKEN))){
+            Toast.makeText(SplashActivity.this, "参数 token 不能为空", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if ((bundle.getFloat(Constants.ACTION_IMGHEIGHT) > 0 && bundle.getFloat(Constants.ACTION_IMGHEIGHT) < 100) || bundle.getFloat(Constants.ACTION_IMGHEIGHT) > 3000) {
+            Toast.makeText(SplashActivity.this, "返回图片高度参数为无效值", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if ((bundle.getFloat(Constants.ACTION_IMGWIDTH) > 0 && bundle.getFloat(Constants.ACTION_IMGWIDTH) < 100) || bundle.getFloat(Constants.ACTION_IMGWIDTH) > 3000) {
+            Toast.makeText(SplashActivity.this, "返回图片宽度参数为无效值", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if ((bundle.getFloat(Constants.ACTION_IMG_RATIO) > 0 && bundle.getFloat(Constants.ACTION_IMG_RATIO) < 0.2) || bundle.getFloat(Constants.ACTION_IMG_RATIO) > 5) {
+            Toast.makeText(SplashActivity.this, "返回图片高宽比参数为无效值", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         return true;
     }
 
@@ -93,9 +112,9 @@ public class SplashActivity extends AppCompatActivity {
                     Type type = new TypeToken<BaseBean<Object>>() {
                     }.getType();
                     bean = gson.fromJson(result, type);
-                    if (bean.getStatus() == Constant.RESULT_OK) {
+                    if (bean.getStatus() == Constants.RESULT_OK) {
                         Toast.makeText(SplashActivity.this, bean.getMsg(), Toast.LENGTH_SHORT).show();
-                        SPUtils.putValue(SplashActivity.this, Constant.ACTION_APPID, (String) appId);
+                        SPUtils.putValue(SplashActivity.this, Constants.ACTION_APPID, (String) appId);
                         if (EsayPermissions.isHasPermission(getApplicationContext(), PERMISSION)) {
                             toWeightPage();
                         } else {
@@ -152,7 +171,15 @@ public class SplashActivity extends AppCompatActivity {
      * 进入称重页面
      */
     private void toWeightPage() {
-        WeightPicCollectActivity.start(SplashActivity.this);
+        WeightPicCollectActivity.start(SplashActivity.this, getIntent().getBundleExtra(Constants.ACTION_BUNDLE));
         finish();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+            WeightSDKManager.newInstance().onDestory();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

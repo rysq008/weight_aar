@@ -36,11 +36,56 @@
             android:textColor="@android:color/black"
             android:textSize="16dp" />
 
+        <EditText
+            android:id="@+id/et_height"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/et_token"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="20dp"
+            android:inputType="numberDecimal"
+            android:hint="请输入返回图片高度"
+            android:minHeight="50dp"
+            android:textColor="@android:color/black"
+            android:textSize="16dp"/>
+
+        <EditText
+            android:id="@+id/et_width"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/et_height"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="20dp"
+            android:hint="请输入返回图片宽度"
+            android:inputType="numberDecimal"
+            android:minHeight="50dp"
+            android:textColor="@android:color/black"
+            android:textSize="16dp"/>
+
+        <EditText
+            android:id="@+id/et_ratio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/et_width"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="20dp"
+            android:hint="请输入返回图片宽高比"
+            android:inputType="numberDecimal"
+            android:minHeight="50dp"
+            android:textColor="@android:color/black"
+            android:textSize="16dp"/>
+
         <TextView
             android:id="@+id/tv_action_weight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/et_token"
+            android:layout_below="@+id/et_ratio"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:text="启动称重"
@@ -56,9 +101,10 @@
 
         <ImageView
             android:id="@+id/iv_bitmap"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_content"
+            android:scaleType="fitCenter"
             android:layout_centerHorizontal="true"
             android:layout_margin="20dp" />
 
