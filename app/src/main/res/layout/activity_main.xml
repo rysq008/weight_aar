@@ -46,10 +46,10 @@
             android:layout_marginRight="30dp"
             android:layout_marginBottom="20dp"
             android:inputType="numberDecimal"
-            android:hint="请输入返回图片高度"
+            android:hint="返回图片高度，取值范围（100--3000）"
             android:minHeight="50dp"
             android:textColor="@android:color/black"
-            android:textSize="16dp"/>
+            android:textSize="14dp"/>
 
         <EditText
             android:id="@+id/et_width"
@@ -60,11 +60,11 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="30dp"
             android:layout_marginBottom="20dp"
-            android:hint="请输入返回图片宽度"
+            android:hint="返回图片宽度，取值范围（100--3000）"
             android:inputType="numberDecimal"
             android:minHeight="50dp"
             android:textColor="@android:color/black"
-            android:textSize="16dp"/>
+            android:textSize="14dp"/>
 
         <EditText
             android:id="@+id/et_ratio"
@@ -75,11 +75,11 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="30dp"
             android:layout_marginBottom="20dp"
-            android:hint="请输入返回图片宽高比"
+            android:hint="返回图片宽高比，取值范围（0.2--5）"
             android:inputType="numberDecimal"
             android:minHeight="50dp"
             android:textColor="@android:color/black"
-            android:textSize="16dp"/>
+            android:textSize="14dp"/>
 
         <TextView
             android:id="@+id/tv_action_weight"
