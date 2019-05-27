@@ -14,7 +14,7 @@ import com.innovationai.pigweight.Constants;
 import com.innovationai.pigweight.activitys.SplashActivity;
 import com.innovationai.pigweight.event.EventManager;
 import com.innovationai.pigweight.event.OnEventListener;
-import com.xiangchuangtec.luolu.animalcounter.R;
+import com.innovationai.piginsuranceweightsdk.R;
 
 import java.util.Map;
 

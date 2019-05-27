@@ -61,9 +61,9 @@
                 tools:replace="android:resource"/>
         </provider>-->
         <!--高德定位配置-->
-        <meta-data
+       <!-- <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="adf3458ffa64cdeee292d3ed2a68b6cc" /> <!-- 2018-12-10高德KEY  adf3458ffa64cdeee292d3ed2a68b6cc -->
+            android:value="adf3458ffa64cdeee292d3ed2a68b6cc" />--> <!-- 2018-12-10高德KEY  adf3458ffa64cdeee292d3ed2a68b6cc -->
 
         <service android:name="com.amap.api.location.APSService"></service>
     </application>
