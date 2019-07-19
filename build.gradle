@@ -3,7 +3,7 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        jcenter() { url 'http://jcenter.bintray.com/' }
         mavenLocal()
         
     }
@@ -18,9 +18,12 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
-        maven { url 'https://jitpack.io' }
-        maven {url "http://github.com/Lucas1012/pig_insurance_aar/raw/master"}
+        jcenter() { url 'http://jcenter.bintray.com/' }
+        maven { url 'http://jitpack.io' }
+//        maven {url "http://github.com/Lucas1012/pig_insurance_aar/raw/master"}
+        maven {url 'http://github.com/innovationaiaar/weight_aar/raw/master'}
+//        maven { url 'http://github.com/saki4510t/libcommon/tree/raw/repository' }
+        maven{url 'http://raw.github.com/saki4510t/libcommon/master/repository/'}
     }
 }
 

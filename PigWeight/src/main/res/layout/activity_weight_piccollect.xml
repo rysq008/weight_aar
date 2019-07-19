@@ -17,7 +17,7 @@
         android:layout_width="240dp"
         android:layout_height="300dp"
         android:layout_centerInParent="true"
-        android:src="@mipmap/iv_colloect_position"
+        android:contentDescription="TODO" android:src="@mipmap/iv_colloect_position"
         android:tint="@color/app_color" />
 
 
@@ -37,11 +37,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/black"
-        android:scaleType="fitStart"
+        android:contentDescription="TODO" android:scaleType="fitStart"
         android:visibility="gone" />
 
-    <com.innovationai.pigweight.camera.SpiritView
-        android:id="@+id/spiritwiew"
+    <com.innovationai.pigweight.camera.WeightSpiritView
+        android:id="@+id/weight_spiritwiew"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_alignParentBottom="true"
@@ -56,7 +56,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="50dp"
-        android:scaleType="fitXY"
+        android:contentDescription="TODO" android:scaleType="fitXY"
         android:src="@mipmap/iv_finished"
         android:tint="@color/WHITE"
         android:visibility="gone" />

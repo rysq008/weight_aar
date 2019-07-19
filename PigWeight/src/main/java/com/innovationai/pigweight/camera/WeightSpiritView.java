@@ -19,7 +19,7 @@ import com.innovationai.pigweight.utils.UIUtils;
 /**
  * Created by Hades on 16/10/9.
  */
-public class SpiritView extends View {
+public class WeightSpiritView extends View {
     //定义水平仪仪表盘图片
     Bitmap back;
     //定义水平仪中气泡图标
@@ -28,7 +28,7 @@ public class SpiritView extends View {
     public int bubbleX, bubbleY;
     private Paint mPaint;
 
-    public SpiritView(Context context, AttributeSet attrs) {
+    public WeightSpiritView(Context context, AttributeSet attrs) {
         super(context, attrs);
         //获取窗口管理器
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);

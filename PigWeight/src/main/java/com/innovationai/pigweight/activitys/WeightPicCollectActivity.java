@@ -7,14 +7,18 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.hardware.*;
+import android.hardware.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
@@ -23,6 +27,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.innovationai.pigweight.Constants;
@@ -31,7 +36,7 @@ import com.innovationai.pigweight.WeightSDKManager;
 import com.innovationai.pigweight.camera.CameraSurfaceView;
 import com.innovationai.pigweight.camera.CameraUtils;
 import com.innovationai.pigweight.camera.ImageUtils;
-import com.innovationai.pigweight.camera.SpiritView;
+import com.innovationai.pigweight.camera.WeightSpiritView;
 import com.innovationai.pigweight.event.EventManager;
 import com.innovationai.pigweight.net.bean.BaseBean;
 import com.innovationai.pigweight.net.bean.RecognitionBean;
@@ -67,13 +72,13 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
     /**
      * 默认预览，输出图片高宽比，小于默认宽高比按屏幕宽高比处理
      */
-    private static final float DEFAULT_RATIO = 16/9.0f;
+    private static final float DEFAULT_RATIO = 16 / 9.0f;
 
     ImageView iv_preview;
     ImageView btn_upload;
     TextView btn_finish;
     //定义水平仪的仪表盘
-    SpiritView spiritwiew;
+    WeightSpiritView spiritwiew;
     FrameLayout fl_preview;
     CameraSurfaceView mPreviewSurfaceview;
     //定义水平仪能处理的最大倾斜角度，超过该角度气泡直接位于边界
@@ -107,7 +112,7 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
         iv_preview = findViewById(R.id.iv_preview);
         btn_upload = findViewById(R.id.btn_upload);
         btn_finish = findViewById(R.id.btn_finish);
-        spiritwiew = findViewById(R.id.spiritwiew);
+        spiritwiew = findViewById(R.id.weight_spiritwiew);
         fl_preview = findViewById(R.id.fl_preview);
         spiritwiew.setOnClickListener(this);
         btn_finish.setOnClickListener(this);
@@ -120,9 +125,9 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
         mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
-        if((float)UIUtils.getHeightPixels(this)/UIUtils.getWidthPixels(this ) >= DEFAULT_RATIO){
-            CameraUtils.setPreviewHeight((int)(UIUtils.getWidthPixels(this) * DEFAULT_RATIO));
-        }else {
+        if ((float) UIUtils.getHeightPixels(this) / UIUtils.getWidthPixels(this) >= DEFAULT_RATIO) {
+            CameraUtils.setPreviewHeight((int) (UIUtils.getWidthPixels(this) * DEFAULT_RATIO));
+        } else {
             CameraUtils.setPreviewHeight(UIUtils.getHeightPixels(this));
         }
 
@@ -196,9 +201,9 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
         fl_preview.addView(mPreviewSurfaceview);
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mPreviewSurfaceview.getLayoutParams();
         params.width = UIUtils.getWidthPixels(this);
-        if((float)UIUtils.getHeightPixels(this)/UIUtils.getWidthPixels(this ) >= DEFAULT_RATIO){
-            params.height = (int)(UIUtils.getWidthPixels(this) * DEFAULT_RATIO);
-        }else {
+        if ((float) UIUtils.getHeightPixels(this) / UIUtils.getWidthPixels(this) >= DEFAULT_RATIO) {
+            params.height = (int) (UIUtils.getWidthPixels(this) * DEFAULT_RATIO);
+        } else {
             params.height = (UIUtils.getHeightPixels(this));
         }
         mPreviewSurfaceview.setLayoutParams(params);
@@ -267,7 +272,7 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if (i == R.id.spiritwiew) {
+        if (i == R.id.weight_spiritwiew) {
             if (btn_upload.getVisibility() == View.VISIBLE || !isCanTakePic) {
                 return;
             }
@@ -373,12 +378,12 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
 //                            LocalBroadcastManager.getInstance(WeightPicCollectActivity.this).sendBroadcast(intent);
                             //首先使用指定宽高返回图片，高宽值无效使用宽高比处理返回图片，高宽比无效使用默认 16：9高宽比返回图片
                             Bitmap bitmap;
-                            if(mImgHeight > 0 && mImgWidth > 0){
+                            if (mImgHeight > 0 && mImgWidth > 0) {
                                 bitmap = ImageUtils.createBitmapBySize(mBitmap, mImgHeight, mImgWidth);
-                            }else if(mScaleRatio > 0){
+                            } else if (mScaleRatio > 0) {
                                 bitmap = ImageUtils.ratioScaleBitmapAddSide(mBitmap, mScaleRatio);
-                            }else {
-                                bitmap = ImageUtils.ratioScaleBitmapAddSide(mBitmap, 16/9.0f);
+                            } else {
+                                bitmap = ImageUtils.ratioScaleBitmapAddSide(mBitmap, 16 / 9.0f);
                             }
 
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -401,7 +406,7 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(WeightPicCollectActivity.this, "数据解析失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(WeightPicCollectActivity.this, "估重失败，请重拍", Toast.LENGTH_SHORT).show();
                 }
             }
 
