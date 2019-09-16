@@ -1,6 +1,7 @@
 package com.innovationai.pigweight.activitys;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,13 +13,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
@@ -27,7 +24,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.innovationai.pigweight.Constants;
@@ -56,12 +52,15 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.reactivex.annotations.NonNull;
+import io.reactivex.annotations.Nullable;
+
 /**
  * @Author: Lucas.Cui
  * 时   间：2019/5/23
  * 简   述：<功能简述>
  */
-public class WeightPicCollectActivity extends AppCompatActivity implements SensorEventListener, ViewTreeObserver.OnGlobalLayoutListener, View.OnClickListener {
+public class WeightPicCollectActivity extends Activity implements SensorEventListener, ViewTreeObserver.OnGlobalLayoutListener, View.OnClickListener {
     private static final String TAG = "WeightPicCollectActivity";
     /**
      * 数据反馈广播action
@@ -108,7 +107,7 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_weight_piccollect);
+        setContentView(R.layout.activity_weight_layout);
         iv_preview = findViewById(R.id.iv_preview);
         btn_upload = findViewById(R.id.btn_upload);
         btn_finish = findViewById(R.id.btn_finish);
@@ -135,6 +134,7 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
         fl_preview.getViewTreeObserver().addOnGlobalLayoutListener(this);
     }
 
+    @SuppressLint("NewApi")
     @Override
     public void onGlobalLayout() {
 
@@ -143,7 +143,7 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
             mGrantedCameraRequested = true;
             initCamera();
         } else {
-            ActivityCompat.requestPermissions(this, NEEDED_PERMISSIONS, ACTION_REQUEST_PERMISSIONS);
+            requestPermissions(NEEDED_PERMISSIONS, ACTION_REQUEST_PERMISSIONS);
         }
     }
 
@@ -153,13 +153,14 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
      * @param neededPermissions
      * @return
      */
+    @SuppressLint("NewApi")
     private boolean checkPermissions(String[] neededPermissions) {
         if (neededPermissions == null || neededPermissions.length == 0) {
             return true;
         }
         boolean allGranted = true;
         for (String neededPermission : neededPermissions) {
-            allGranted &= ContextCompat.checkSelfPermission(this, neededPermission) == PackageManager.PERMISSION_GRANTED;
+                allGranted &= checkSelfPermission(neededPermission) == PackageManager.PERMISSION_GRANTED;
         }
         return allGranted;
     }
@@ -489,8 +490,9 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
             float anglez = (float) (event.values[2]);
             long curr_time = SystemClock.elapsedRealtime();
             long last_time = spiritwiew.getTag() == null ? 0 : (long) (spiritwiew.getTag());
-            if (curr_time - last_time < 500)
+            if (curr_time - last_time < 500) {
                 return;
+            }
             if (angley >= -3 && angley <= 3 && anglez >= -3 && anglez <= 3) {
 //                btn_take.setVisibility(View.VISIBLE);
                 spiritwiew.setColor(255);

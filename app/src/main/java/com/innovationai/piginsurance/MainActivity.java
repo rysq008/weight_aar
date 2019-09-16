@@ -1,11 +1,11 @@
 package com.innovationai.piginsurance;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -20,7 +20,7 @@ import com.innovationai.pigweight.event.OnEventListener;
 
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
     private TextView tv_action_weight, tv_content;
     private ImageView iv_bitmap;
     private EditText et_appid, et_token, et_height, et_width, et_ratio;
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                     bundle.putFloat(Constants.ACTION_IMG_RATIO, Float.valueOf(et_ratio.getText().toString().trim()));
                 }
 //                SplashActivity.start(MainActivity.this, bundle);
-                EventManager.getInstance().requestWeightApi(MainActivity.this, bundle, new Handler.Callback() {
+                EventManager.getInstance().requestWeightApi(MainActivity.this, "2c28450ebe993dd61cb4d76eff7a916d",token, new Handler.Callback() {
                     @Override
                     public boolean handleMessage(Message msg) {
                         if (MainActivity.this == null || MainActivity.this.isFinishing())
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
-        et_appid.setText(mAppIdTest);
+        et_appid.setText("2c28450ebe993dd61cb4d76eff7a916d");
         et_token.setText(token);
 //        //注册接收广播
 //        mLocalBroadcast = new LocalBroadcast();

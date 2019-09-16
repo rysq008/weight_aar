@@ -4,8 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.widget.Toast;
@@ -27,13 +25,15 @@ import com.innovationai.pigweight.utils.SPUtils;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import io.reactivex.annotations.Nullable;
+
 
 /**
  * @Author: Lucas.Cui
  * 时   间：2019/5/22
  * 简   述：<功能简述>
  */
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends Activity {
 
     //配置需要取的权限
     private static final String[] PERMISSION = new String[]{
@@ -75,7 +75,9 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private boolean verifyParams(Bundle bundle) {
-        if (bundle == null) return false;
+        if (bundle == null) {
+            return false;
+        }
         if (TextUtils.isEmpty(bundle.getString(Constants.ACTION_APPID))) {
             Toast.makeText(SplashActivity.this, "参数 appId 不能为空", Toast.LENGTH_SHORT).show();
             return false;
