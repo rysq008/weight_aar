@@ -27,7 +27,7 @@ public class SPUtils {
         } else if (value instanceof String) {
             edit.putString(key, (String) value);
         }
-        edit.apply();
+        edit.commit();
     }
 
     public static Object getValue(Context context, String key, Object defValue) {

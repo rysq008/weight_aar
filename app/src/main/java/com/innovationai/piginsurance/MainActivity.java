@@ -10,6 +10,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+
 import com.innovationai.pigweight.Constants;
 import com.innovationai.pigweight.activitys.SplashActivity;
 import com.innovationai.pigweight.event.EventManager;
