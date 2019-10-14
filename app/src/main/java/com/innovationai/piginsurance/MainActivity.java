@@ -3,6 +3,8 @@ package com.innovationai.piginsurance;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -58,54 +60,41 @@ public class MainActivity extends AppCompatActivity {
                if(!TextUtils.isEmpty(et_ratio.getText().toString().trim())){
                    bundle.putFloat(Constants.ACTION_IMG_RATIO, Float.valueOf(et_ratio.getText().toString().trim()));
                }
-                SplashActivity.start(MainActivity.this, bundle);
+//                SplashActivity.start(MainActivity.this, bundle);
+
+                EventManager.getInstance().requestWeightApi(MainActivity.this, "2c28450ebe993dd61cb4d76eff7a916d",token, new Handler.Callback() {
+                    @Override
+                    public boolean handleMessage(Message msg) {
+                        if (MainActivity.this == null || MainActivity.this.isFinishing())
+                            return false;
+                        Map<String, Object> map = (Map<String, Object>) msg.obj;
+                        if (map == null) {
+                            Toast.makeText(MainActivity.this, "没有返回结果", Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                        try {
+                            Toast.makeText(MainActivity.this, "模型结果反馈： " + map.get("data").toString() + "尸长：" +map.get("deadlength").toString(), Toast.LENGTH_LONG).show();
+                            tv_content.setText(map.get("data").toString()+ ";尸长" + map.get("deadlength").toString());
+                            byte[] bis = (byte[]) map.get("bitmap");
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bis, 0, bis.length);
+                            iv_bitmap.setImageBitmap(bitmap);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(MainActivity.this, "aaaaa", Toast.LENGTH_SHORT).show();
+                        }
+                        return false;
+                    }
+                });
             }
         });
         et_appid.setText(mAppIdTest);
         et_token.setText(token);
-//        //注册接收广播
-//        mLocalBroadcast = new LocalBroadcast();
-//        IntentFilter filter = new IntentFilter();
-//        filter.addAction(WeightPicCollectActivity.ACTION_RECOGNITION);
-//        LocalBroadcastManager.getInstance(this).registerReceiver(mLocalBroadcast, filter);
-        EventManager.getInstance().addEvent(mOnEventListener = new OnWeightListener());
+
     }
 
-    public class OnWeightListener implements OnEventListener {
-        @Override
-        public void onReceive(Map<String, Object> map) {
-            if (map == null) {
-                Toast.makeText(MainActivity.this,"没有返回结果", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Toast.makeText(MainActivity.this, "模型结果反馈： " + map.get("data").toString(), Toast.LENGTH_LONG).show();
-            tv_content.setText(map.get("data").toString());
-            byte[] bis = (byte[]) map.get("bitmap");
-            Bitmap bitmap = BitmapFactory.decodeByteArray(bis, 0, bis.length);
-            iv_bitmap.setImageBitmap(bitmap);
-        }
-    }
-
-    /**
-     * 接收广播
-     */
-//    private class LocalBroadcast extends BroadcastReceiver {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            if (intent.getAction().equals(WeightPicCollectActivity.ACTION_RECOGNITION) && intent.getSerializableExtra("data") != null) {
-//                Toast.makeText(MainActivity.this, "模型结果反馈： " + intent.getSerializableExtra("data").toString(), Toast.LENGTH_LONG).show();
-//                tv_content.setText(intent.getSerializableExtra("data").toString());
-//                byte[] bis = intent.getByteArrayExtra("bitmap");
-//                Bitmap bitmap = BitmapFactory.decodeByteArray(bis, 0, bis.length);
-//                iv_bitmap.setImageBitmap(bitmap);
-//            }
-//        }
-//    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mOnEventListener != null) {
-            EventManager.getInstance().removeEvent(mOnEventListener);
-        }
+        EventManager.getInstance().removeEvent(this);
     }
 }

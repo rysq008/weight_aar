@@ -39,6 +39,7 @@ import com.innovationai.pigweight.net.netsubscribe.HttpRequestSubscribe;
 import com.innovationai.pigweight.net.netutils.NetError;
 import com.innovationai.pigweight.net.netutils.OnSuccessAndFaultListener;
 import com.innovationai.pigweight.net.netutils.OnSuccessAndFaultSub;
+import com.innovationai.pigweight.utils.CalculateLength;
 import com.innovationai.pigweight.utils.SPUtils;
 import com.innovationai.pigweight.utils.UIUtils;
 import com.socks.library.KLog;
@@ -384,9 +385,15 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
                             byte[] bitmapByte = baos.toByteArray();
+
+                            String weight = bean.getData().getRecognitionResult().getWeight();
+                            double dWeight = Double.parseDouble(weight);
+                            double dLength = CalculateLength.getLength(dWeight);
+
                             Map<String, Object> map = new HashMap<>();
                             map.put("data", bean.getData().getRecognitionResult());
                             map.put("bitmap", bitmapByte);
+                            map.put("deadlength", dLength+"");
                             EventManager.getInstance().postEventEvent(map);
                             KLog.d("scale compress width : " + bitmap.getWidth() + " height : " + bitmap.getHeight());
                             Toast.makeText(WeightPicCollectActivity.this, bean.getMsg(), Toast.LENGTH_SHORT).show();

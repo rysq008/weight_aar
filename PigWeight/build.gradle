@@ -8,7 +8,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 28
         versionCode 2
-        versionName "1.0.6"
+        versionName "1.1.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -58,7 +58,7 @@ apply plugin: 'maven'
 
 ext {
     // 从Github上clone下来的项目的本地地址
-    GITHUB_REPO_PATH = "D:\\Android_work\\xiangchuang\\PigInsuranceWeightAAR"//"C:\\insurance\\farm_pig_insurance\\farm_pig_insurance"/*"C:\\pig_farmer_aar"*/
+    GITHUB_REPO_PATH = "D:\\Android_work\\xiangchuang\\weight_aar"//"C:\\insurance\\farm_pig_insurance\\farm_pig_insurance"/*"C:\\pig_farmer_aar"*/
     PUBLISH_GROUP_ID = 'com.innovationai.pigweight'
     PUBLISH_ARTIFACT_ID = 'pig_insurance_weight'
     PUBLISH_VERSION = android.defaultConfig.versionName/*'1.5.3'*/

@@ -9,5 +9,5 @@ import java.util.Map;
  */
 public interface OnEventListener {
 
-    void onReceive(Map<String, Object> map);
+    void onReceive(Object obj, Map<String, Object> map);
 }
