@@ -77,9 +77,9 @@ public class EventManager {
 //    }
 
     public void postEventEvent(Map<String, Object> map) {
-        Message msg = Message.obtain();
-        msg.obj = map;
         for (Map.Entry<Object, Handler> entry : mHandlerMap.entrySet()) {
+            Message msg = new Message();
+            msg.obj = map;
             entry.getValue().sendMessage(msg);
         }
     }
