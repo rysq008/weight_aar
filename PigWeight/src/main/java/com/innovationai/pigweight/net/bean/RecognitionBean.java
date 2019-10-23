@@ -65,7 +65,16 @@ public class RecognitionBean implements Serializable {
         private static final long serialVersionUID = 6909975026582713760L;
         private String measureArea;
         private String weight;
-        private String bodyLength;
+        private String bodyLength;//耳根到尾长度
+        private String wlength;//全长
+
+        public String getWlength() {
+            return wlength;
+        }
+
+        public void setWlength(String wlength) {
+            this.wlength = wlength;
+        }
 
         public String getMeasureArea() {
             return measureArea;
