@@ -20,7 +20,7 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
-        maven {url "http://github.com/Lucas1012/pig_insurance_aar/raw/master"}
+        maven {url "http://gitee.com/rysq008/weight_aar/raw/master"}
     }
 }
 

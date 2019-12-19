@@ -2,27 +2,33 @@ package com.innovationai.pigweight.activitys;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.hardware.*;
+import android.hardware.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.apeng.permissions.EsayPermissions;
+import com.apeng.permissions.OnPermission;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.innovationai.pigweight.Constants;
@@ -49,6 +55,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -56,18 +63,16 @@ import java.util.Map;
  * 时   间：2019/5/23
  * 简   述：<功能简述>
  */
-public class WeightPicCollectActivity extends AppCompatActivity implements SensorEventListener, ViewTreeObserver.OnGlobalLayoutListener, View.OnClickListener {
+public class WeightPicCollectActivity extends AppCompatActivity implements SensorEventListener, View.OnClickListener {
     private static final String TAG = "WeightPicCollectActivity";
     /**
      * 数据反馈广播action
      */
-    public static final String ACTION_RECOGNITION = "innovationai.intent.action.Recognition";
     private static final String[] NEEDED_PERMISSIONS = new String[]{Manifest.permission.CAMERA};
-    private static final int ACTION_REQUEST_PERMISSIONS = 1;
     /**
      * 默认预览，输出图片高宽比，小于默认宽高比按屏幕宽高比处理
      */
-    private static final float DEFAULT_RATIO = 16/9.0f;
+    private static final float DEFAULT_RATIO = 16 / 9.0f;
 
     ImageView iv_preview;
     ImageView btn_upload;
@@ -120,73 +125,63 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
         mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
-        if((float)UIUtils.getHeightPixels(this)/UIUtils.getWidthPixels(this ) >= DEFAULT_RATIO){
-            CameraUtils.setPreviewHeight((int)(UIUtils.getWidthPixels(this) * DEFAULT_RATIO));
-        }else {
+        if ((float) UIUtils.getHeightPixels(this) / UIUtils.getWidthPixels(this) >= DEFAULT_RATIO) {
+            CameraUtils.setPreviewHeight((int) (UIUtils.getWidthPixels(this) * DEFAULT_RATIO));
+        } else {
             CameraUtils.setPreviewHeight(UIUtils.getHeightPixels(this));
         }
 
         CameraUtils.setPreviewWidth(UIUtils.getWidthPixels(this));
-        fl_preview.getViewTreeObserver().addOnGlobalLayoutListener(this);
+//        fl_preview.getViewTreeObserver().addOnGlobalLayoutListener(this);
     }
 
     @Override
-    public void onGlobalLayout() {
-
-        fl_preview.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-        if (checkPermissions(NEEDED_PERMISSIONS)) {
+    protected void onStart() {
+        super.onStart();
+        if (/*checkPermissions(NEEDED_PERMISSIONS)*/EsayPermissions.isHasPermission(this, NEEDED_PERMISSIONS)) {
             mGrantedCameraRequested = true;
             initCamera();
         } else {
-            ActivityCompat.requestPermissions(this, NEEDED_PERMISSIONS, ACTION_REQUEST_PERMISSIONS);
+            EsayPermissions.with(this).constantRequest()
+                    .permission(NEEDED_PERMISSIONS)
+                    .request(new OnPermission() {
+                        @Override
+                        public void hasPermission(List<String> granted, boolean isAll) {
+                            initCamera();
+                            Toast.makeText(WeightPicCollectActivity.this, "获取权限成功", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void noPermission(List<String> denied, boolean quick) {
+                            new AlertDialog.Builder(WeightPicCollectActivity.this).setTitle("提示").setMessage("请打开权限设置，同意所有权限！").
+                                    setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+//                                            EsayPermissions.gotoPermissionSettings(WeightPicCollectActivity.this);
+                                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                            intent.setData(Uri.fromParts("package", WeightPicCollectActivity.this.getPackageName(), null));
+//                                        EsayPermissions.gotoPermissionSettings(SplashActivity.this);
+                                            WeightPicCollectActivity.this.startActivityForResult(intent, 0);
+                                        }
+                                    }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            }).setCancelable(false).show();
+                        }
+                    });
         }
     }
 
-    /**
-     * 检测权限
-     *
-     * @param neededPermissions
-     * @return
-     */
-    private boolean checkPermissions(String[] neededPermissions) {
-        if (neededPermissions == null || neededPermissions.length == 0) {
-            return true;
-        }
-        boolean allGranted = true;
-        for (String neededPermission : neededPermissions) {
-            allGranted &= ContextCompat.checkSelfPermission(this, neededPermission) == PackageManager.PERMISSION_GRANTED;
-        }
-        return allGranted;
-    }
-
-    /**
-     * 授权结果
-     *
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case ACTION_REQUEST_PERMISSIONS:
-                boolean isAllGranted = true;
-                for (int grantResult : grantResults) {
-                    isAllGranted &= (grantResult == PackageManager.PERMISSION_GRANTED);
-                }
-                if (isAllGranted) {
-                    mGrantedCameraRequested = true;
-                    initCamera();
-                } else {
-                    Toast.makeText(this, "权限被拒绝", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-                break;
-            default:
-                break;
-        }
-    }
+//    @Override
+//    public void onGlobalLayout() {
+//
+//        fl_preview.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//
+//
+//    }
 
     /**
      * 初始化camera 预览
@@ -196,9 +191,9 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
         fl_preview.addView(mPreviewSurfaceview);
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mPreviewSurfaceview.getLayoutParams();
         params.width = UIUtils.getWidthPixels(this);
-        if((float)UIUtils.getHeightPixels(this)/UIUtils.getWidthPixels(this ) >= DEFAULT_RATIO){
-            params.height = (int)(UIUtils.getWidthPixels(this) * DEFAULT_RATIO);
-        }else {
+        if ((float) UIUtils.getHeightPixels(this) / UIUtils.getWidthPixels(this) >= DEFAULT_RATIO) {
+            params.height = (int) (UIUtils.getWidthPixels(this) * DEFAULT_RATIO);
+        } else {
             params.height = (UIUtils.getHeightPixels(this));
         }
         mPreviewSurfaceview.setLayoutParams(params);
@@ -373,12 +368,12 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
 //                            LocalBroadcastManager.getInstance(WeightPicCollectActivity.this).sendBroadcast(intent);
                             //首先使用指定宽高返回图片，高宽值无效使用宽高比处理返回图片，高宽比无效使用默认 16：9高宽比返回图片
                             Bitmap bitmap;
-                            if(mImgHeight > 0 && mImgWidth > 0){
+                            if (mImgHeight > 0 && mImgWidth > 0) {
                                 bitmap = ImageUtils.createBitmapBySize(mBitmap, mImgHeight, mImgWidth);
-                            }else if(mScaleRatio > 0){
+                            } else if (mScaleRatio > 0) {
                                 bitmap = ImageUtils.ratioScaleBitmapAddSide(mBitmap, mScaleRatio);
-                            }else {
-                                bitmap = ImageUtils.ratioScaleBitmapAddSide(mBitmap, 16/9.0f);
+                            } else {
+                                bitmap = ImageUtils.ratioScaleBitmapAddSide(mBitmap, 16 / 9.0f);
                             }
 
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();

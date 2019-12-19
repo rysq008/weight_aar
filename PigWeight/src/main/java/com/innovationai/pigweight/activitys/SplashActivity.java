@@ -2,9 +2,13 @@ package com.innovationai.pigweight.activitys;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -42,6 +46,7 @@ public class SplashActivity extends AppCompatActivity {
             Manifest.permission.ACCESS_COARSE_LOCATION, //定位权限
             Manifest.permission.CAMERA
     };
+    private Bundle bundle;
 
     public static void start(Activity context, Bundle bundle) {
 
@@ -55,12 +60,17 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         // TODO: 2019/5/24 现在只在这里使用appId
-        Bundle bundle = getIntent().getBundleExtra(Constants.ACTION_BUNDLE);
+        bundle = getIntent().getBundleExtra(Constants.ACTION_BUNDLE);
         if (!verifyParams(bundle)) {
             finish();
             return;
         }
         WeightSDKManager.newInstance().init(getApplication());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         String appId = bundle.getString(Constants.ACTION_APPID);
         String token = bundle.getString(Constants.ACTION_TOKEN);
         if (appId.equals(SPUtils.getValue(SplashActivity.this, Constants.ACTION_APPID, ""))) {
@@ -80,7 +90,7 @@ public class SplashActivity extends AppCompatActivity {
             Toast.makeText(SplashActivity.this, "参数 appId 不能为空", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (TextUtils.isEmpty(bundle.getString(Constants.ACTION_TOKEN))){
+        if (TextUtils.isEmpty(bundle.getString(Constants.ACTION_TOKEN))) {
             Toast.makeText(SplashActivity.this, "参数 token 不能为空", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -144,7 +154,7 @@ public class SplashActivity extends AppCompatActivity {
      */
     public void requestPermission() {
         EsayPermissions.with(this)
-//                .constantRequest() //可设置被拒绝后继续申请，直到用户授权或者永久拒绝
+                .constantRequest() //可设置被拒绝后继续申请，直到用户授权或者永久拒绝
 //                .permission(Permission.SYSTEM_ALERT_WINDOW, Permission.REQUEST_INSTALL_PACKAGES) //支持请求6.0悬浮窗权限8.0请求安装权限
                 .permission(PERMISSION)
                 .request(new OnPermission() {
@@ -153,16 +163,30 @@ public class SplashActivity extends AppCompatActivity {
                         if (isAll) {
                             toWeightPage();
                         } else {
-                            Toast.makeText(SplashActivity.this, "获取权限失败", Toast.LENGTH_SHORT).show();
-                            finish();
+                            Toast.makeText(SplashActivity.this, "部分权限获取失败", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void noPermission(List<String> denied, boolean quick) {
-
-                        Toast.makeText(SplashActivity.this, "获取权限失败", Toast.LENGTH_SHORT).show();
-                        finish();
+                        new AlertDialog.Builder(SplashActivity.this).setTitle("提示").setMessage("请打开权限设置，同意所有权限！").
+                                setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                        intent.setData(Uri.fromParts("package", SplashActivity.this.getPackageName(), null));
+//                                        EsayPermissions.gotoPermissionSettings(SplashActivity.this);
+                                        SplashActivity.this.startActivityForResult(intent, 0);
+                                    }
+                                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        }).setCancelable(false).show();
+//                        Toast.makeText(SplashActivity.this, "获取权限失败", Toast.LENGTH_SHORT).show();
+//                        finish();
                     }
                 });
     }
@@ -176,8 +200,8 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event){
-        if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
             WeightSDKManager.newInstance().onDestory();
         }
         return super.onKeyDown(keyCode, event);
