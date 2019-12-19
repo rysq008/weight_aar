@@ -2,9 +2,10 @@ package com.innovationai.pigweight.utils;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.view.ViewGroup;
+
+import io.reactivex.annotations.NonNull;
 
 /**
  * @author wbs on 10/29/17.

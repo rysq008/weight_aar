@@ -1,6 +1,7 @@
 package com.innovationai.pigweight.activitys;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,7 +38,7 @@ import com.innovationai.pigweight.WeightSDKManager;
 import com.innovationai.pigweight.camera.CameraSurfaceView;
 import com.innovationai.pigweight.camera.CameraUtils;
 import com.innovationai.pigweight.camera.ImageUtils;
-import com.innovationai.pigweight.camera.SpiritView;
+import com.innovationai.pigweight.camera.WeightSpiritView;
 import com.innovationai.pigweight.event.EventManager;
 import com.innovationai.pigweight.net.bean.BaseBean;
 import com.innovationai.pigweight.net.bean.RecognitionBean;
@@ -78,7 +79,7 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
     ImageView btn_upload;
     TextView btn_finish;
     //定义水平仪的仪表盘
-    SpiritView spiritwiew;
+    WeightSpiritView spiritwiew;
     FrameLayout fl_preview;
     CameraSurfaceView mPreviewSurfaceview;
     //定义水平仪能处理的最大倾斜角度，超过该角度气泡直接位于边界
@@ -108,11 +109,11 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_weight_piccollect);
+        setContentView(R.layout.activity_weight_layout);
         iv_preview = findViewById(R.id.iv_preview);
         btn_upload = findViewById(R.id.btn_upload);
         btn_finish = findViewById(R.id.btn_finish);
-        spiritwiew = findViewById(R.id.spiritwiew);
+        spiritwiew = findViewById(R.id.weight_spiritwiew);
         fl_preview = findViewById(R.id.fl_preview);
         spiritwiew.setOnClickListener(this);
         btn_finish.setOnClickListener(this);
@@ -135,6 +136,7 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
 //        fl_preview.getViewTreeObserver().addOnGlobalLayoutListener(this);
     }
 
+    @SuppressLint("NewApi")
     @Override
     protected void onStart() {
         super.onStart();
@@ -262,7 +264,7 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if (i == R.id.spiritwiew) {
+        if (i == R.id.weight_spiritwiew) {
             if (btn_upload.getVisibility() == View.VISIBLE || !isCanTakePic) {
                 return;
             }
@@ -398,7 +400,7 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(WeightPicCollectActivity.this, "数据解析失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(WeightPicCollectActivity.this, "估重失败，请重拍", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -481,8 +483,9 @@ public class WeightPicCollectActivity extends AppCompatActivity implements Senso
             float anglez = (float) (event.values[2]);
             long curr_time = SystemClock.elapsedRealtime();
             long last_time = spiritwiew.getTag() == null ? 0 : (long) (spiritwiew.getTag());
-            if (curr_time - last_time < 500)
+            if (curr_time - last_time < 500) {
                 return;
+            }
             if (angley >= -3 && angley <= 3 && anglez >= -3 && anglez <= 3) {
 //                btn_take.setVisibility(View.VISIBLE);
                 spiritwiew.setColor(255);

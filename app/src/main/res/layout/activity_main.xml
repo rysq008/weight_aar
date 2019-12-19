@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     tools:context="com.innovationai.piginsurance.MainActivity">
 
     <RelativeLayout
@@ -45,11 +45,11 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="30dp"
             android:layout_marginBottom="20dp"
-            android:inputType="numberDecimal"
             android:hint="返回图片高度，取值范围（100--3000）"
+            android:inputType="numberDecimal"
             android:minHeight="50dp"
             android:textColor="@android:color/black"
-            android:textSize="14dp"/>
+            android:textSize="14dp" />
 
         <EditText
             android:id="@+id/et_width"
@@ -64,7 +64,7 @@
             android:inputType="numberDecimal"
             android:minHeight="50dp"
             android:textColor="@android:color/black"
-            android:textSize="14dp"/>
+            android:textSize="14dp" />
 
         <EditText
             android:id="@+id/et_ratio"
@@ -79,7 +79,24 @@
             android:inputType="numberDecimal"
             android:minHeight="50dp"
             android:textColor="@android:color/black"
-            android:textSize="14dp"/>
+            android:textSize="14dp" />
+
+        <ImageView
+            android:id="@+id/iv_bitmap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_content"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="20dp"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_action_weight"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="20dp" />
 
         <TextView
             android:id="@+id/tv_action_weight"
@@ -91,23 +108,6 @@
             android:text="启动称重"
             android:textSize="18dp" />
 
-        <TextView
-            android:id="@+id/tv_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_action_weight"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="20dp" />
-
-        <ImageView
-            android:id="@+id/iv_bitmap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_content"
-            android:scaleType="fitCenter"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="20dp" />
-
 
     </RelativeLayout>
-</android.support.v4.widget.NestedScrollView>
+</ScrollView>

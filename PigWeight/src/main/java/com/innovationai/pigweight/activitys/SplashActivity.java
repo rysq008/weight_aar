@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.widget.Toast;
@@ -37,7 +36,7 @@ import java.util.List;
  * 时   间：2019/5/22
  * 简   述：<功能简述>
  */
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends Activity {
 
     //配置需要取的权限
     private static final String[] PERMISSION = new String[]{
@@ -85,7 +84,9 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private boolean verifyParams(Bundle bundle) {
-        if (bundle == null) return false;
+        if (bundle == null) {
+            return false;
+        }
         if (TextUtils.isEmpty(bundle.getString(Constants.ACTION_APPID))) {
             Toast.makeText(SplashActivity.this, "参数 appId 不能为空", Toast.LENGTH_SHORT).show();
             return false;

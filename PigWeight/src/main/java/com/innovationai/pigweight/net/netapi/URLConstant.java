@@ -14,7 +14,7 @@ public class URLConstant {
     // TODO: 2019/3/26 添加正式环境后，修改为正式环境 
 //    public static String BASE_URL_RELEASE = "";
 //    public static String BASE_URL_RELEASE = "http://192.168.1.109:8081/";
-    public static String BASE_URL_RELEASE = "http://47.92.167.61:8081/";
+    public static String BASE_URL_RELEASE = "https://f14e.innovationai.cn/";//"http://47.92.167.61:8081/";
     public static String BASE_URL = BASE_URL_RELEASE;
 
 

@@ -9,9 +9,7 @@ import android.os.Message;
 import com.innovationai.pigweight.Constants;
 import com.innovationai.pigweight.activitys.SplashActivity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -81,39 +79,41 @@ public class EventManager {
             Message msg = new Message();
             msg.obj = map;
             entry.getValue().sendMessage(msg);
+            }
         }
-    }
 
-    public void requestWeightApi(Context context, Bundle bundle, Handler.Callback callback) {
-        Intent it = new Intent(context, SplashActivity.class);
-        it.putExtra(Constants.ACTION_BUNDLE, bundle);
-        context.startActivity(it);
-        if (callback != null)
-            addEvent(context, callback);
-    }
+        public void requestWeightApi (Context context, Bundle bundle, Handler.Callback callback){
+            Intent it = new Intent(context, SplashActivity.class);
+            it.putExtra(Constants.ACTION_BUNDLE, bundle);
+            context.startActivity(it);
+            if (callback != null)
+                addEvent(context, callback);
+        }
 
-    public void requestWeightApi(Context context, String appid, String token, Handler.Callback callback) {
-        requestWeightApi(context, appid, token, 0, 0, 0, callback);
-    }
+        public void requestWeightApi (Context context, String appid, String token, Handler.Callback
+        callback){
+            requestWeightApi(context, appid, token, 0, 0, 0, callback);
+        }
 
-    public void requestWeightApi(Context context, String appid, String token, float width, float height, float ratio, Handler.Callback callback) {
-        Intent it = new Intent(context, SplashActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(Constants.ACTION_APPID, appid);
-        bundle.putString(Constants.ACTION_TOKEN, token);
-        if (0 != (width)) {
-            bundle.putFloat(Constants.ACTION_IMGWIDTH, (width));
-        }
-        if (0 != (height)) {
-            bundle.putFloat(Constants.ACTION_IMGHEIGHT, (height));
-        }
-        if (0 != (ratio)) {
-            bundle.putFloat(Constants.ACTION_IMG_RATIO, (ratio));
-        }
+        public void requestWeightApi (Context context, String appid, String token,float width,
+        float height, float ratio, Handler.Callback callback){
+            Intent it = new Intent(context, SplashActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.ACTION_APPID, appid);
+            bundle.putString(Constants.ACTION_TOKEN, token);
+            if (0 != (width)) {
+                bundle.putFloat(Constants.ACTION_IMGWIDTH, (width));
+            }
+            if (0 != (height)) {
+                bundle.putFloat(Constants.ACTION_IMGHEIGHT, (height));
+            }
+            if (0 != (ratio)) {
+                bundle.putFloat(Constants.ACTION_IMG_RATIO, (ratio));
+            }
 //        it.putExtras(bundle);
-        it.putExtra(Constants.ACTION_BUNDLE, bundle);
-        context.startActivity(it);
-        if (callback != null)
-            addEvent(context, callback);
+            it.putExtra(Constants.ACTION_BUNDLE, bundle);
+            context.startActivity(it);
+            if (callback != null)
+                addEvent(context, callback);
+        }
     }
-}

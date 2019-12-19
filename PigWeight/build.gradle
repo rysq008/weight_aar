@@ -3,7 +3,6 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 28
 
-
     defaultConfig {
         minSdkVersion 18
         targetSdkVersion 28
@@ -30,11 +29,11 @@ dependencies {
 
     implementation 'com.android.support:appcompat-v7:28.0.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support.test:runner:1.1.0'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.1.0'
 
     implementation 'com.apeng:EsayPermissions:1.0.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.9.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.13.1'
     //导入RxJava 和 RxAndroid
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
@@ -48,9 +47,6 @@ dependencies {
     implementation 'com.github.zhaokaiqiang.klog:library:1.6.0'
     //高德定位
     implementation 'com.amap.api:location:4.7.2'
-
-
-
 }
 
 //////// 打包发布 ////////
