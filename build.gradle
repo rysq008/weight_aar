@@ -3,6 +3,7 @@
 buildscript {
     repositories {
         google()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/'}
         jcenter() { url 'http://jcenter.bintray.com/' }
         mavenLocal()
         
@@ -18,6 +19,7 @@ buildscript {
 allprojects {
     repositories {
         google()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/'}
         jcenter()
         maven { url 'https://jitpack.io' }
         maven {url "http://github.com/innovationaiaar/weight_aar/raw/master"}

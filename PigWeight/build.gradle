@@ -29,8 +29,8 @@ dependencies {
 
     implementation 'com.android.support:appcompat-v7:28.0.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.1.0'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.1.0'
+//    androidTestImplementation 'com.android.support.test:runner:1.1.0'
+//    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.1.0'
 
     implementation 'com.apeng:EsayPermissions:1.0.0'
     implementation 'com.squareup.okhttp3:okhttp:3.13.1'
@@ -49,34 +49,34 @@ dependencies {
     implementation 'com.amap.api:location:4.7.2'
 }
 
-//////// 打包发布 ////////
-apply plugin: 'maven'
-
-ext {
-    // 从Github上clone下来的项目的本地地址
-    GITHUB_REPO_PATH = "C:\\pig_weight_aar";//"C:\\insurance\\farm_pig_insurance\\farm_pig_insurance"/*"C:\\pig_farmer_aar"*/
-    PUBLISH_GROUP_ID = 'com.innovationai.pigweight'
-    PUBLISH_ARTIFACT_ID = 'pig_insurance_weight'
-    PUBLISH_VERSION = android.defaultConfig.versionName/*'1.5.3'*/
-}
-
-uploadArchives {
-    repositories.mavenDeployer {
-        def deployPath = file(project.GITHUB_REPO_PATH)
-        repository(url: "file://${deployPath.absolutePath}")
-        pom.project {
-            groupId project.PUBLISH_GROUP_ID
-            artifactId project.PUBLISH_ARTIFACT_ID
-            version project.PUBLISH_VERSION
-        }
-    }
-}
-
-// 源代码一起打包
-task androidSourcesJar(type: Jar) {
-    classifier = 'sources'
-    from android.sourceSets.main.java.sourceFiles
-}
-artifacts {
-    archives androidSourcesJar
-}
+////////// 打包发布 ////////
+//apply plugin: 'maven'
+//
+//ext {
+//    // 从Github上clone下来的项目的本地地址
+//    GITHUB_REPO_PATH = "C:\\pig_weight_aar";//"C:\\insurance\\farm_pig_insurance\\farm_pig_insurance"/*"C:\\pig_farmer_aar"*/
+//    PUBLISH_GROUP_ID = 'com.innovationai.pigweight'
+//    PUBLISH_ARTIFACT_ID = 'pig_insurance_weight'
+//    PUBLISH_VERSION = android.defaultConfig.versionName/*'1.5.3'*/
+//}
+//
+//uploadArchives {
+//    repositories.mavenDeployer {
+//        def deployPath = file(project.GITHUB_REPO_PATH)
+//        repository(url: "file://${deployPath.absolutePath}")
+//        pom.project {
+//            groupId project.PUBLISH_GROUP_ID
+//            artifactId project.PUBLISH_ARTIFACT_ID
+//            version project.PUBLISH_VERSION
+//        }
+//    }
+//}
+//
+//// 源代码一起打包
+//task androidSourcesJar(type: Jar) {
+//    classifier = 'sources'
+//    from android.sourceSets.main.java.sourceFiles
+//}
+//artifacts {
+//    archives androidSourcesJar
+//}
